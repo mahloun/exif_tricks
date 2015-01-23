@@ -1,4 +1,4 @@
-#/usr/bin/env python2
+#!/usr/bin/env python2
 
 import sys
 from exifread import process_file
@@ -14,6 +14,8 @@ def extract_exif_data(filename):
 
     if tags.has_key("Image GPSInfo"):
         print(tags["Image GPSInfo"])
+    else:
+        print("no data found")
 
 if __name__ == "main":
     for arg in sys.argv[1:]:
