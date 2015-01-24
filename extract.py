@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 
 import sys
+import re
 from exifread import process_file
 
-gpsTags = [
-    "EXIF GPS GPSImgDirection",
-    "EXIF GPS GPSDate",
-    "Image GPSInfo",
-    "EXIF GPS GPSImgDirectionRef",
-    "EXIF GPS GPSTimeStamp"
-]
+def getGpsTags(tags):
+    pattern = re.compile("GPS GPS[A-Za-z]+")
+    gpsTags = []
+
+    for tag in tags:
+        match = pattern.search(tag)
+
+        if match:
+            gpsTags.append(match.string)
+
+    return gpsTags
 
 def extract_exif_data(filename):
     try:
@@ -20,10 +25,12 @@ def extract_exif_data(filename):
         return
 
     tags = process_file(f, True)
+    gpsTags = getGpsTags(tags)
 
     for gpsTag in gpsTags:
         if gpsTag in tags.keys():
-            print(gpsTag + ':', tags[gpsTag])
+            print('\t'+ gpsTag.replace("EXIF GPS GPS", "") + ':', tags[gpsTag])
+
 
 if __name__ == "__main__":
     for arg in sys.argv[1:]:
