@@ -3,6 +3,14 @@
 import sys
 from exifread import process_file
 
+gpsTags = [
+    "EXIF GPS GPSImgDirection",
+    "EXIF GPS GPSDate",
+    "Image GPSInfo",
+    "EXIF GPS GPSImgDirectionRef",
+    "EXIF GPS GPSTimeStamp"
+]
+
 def extract_exif_data(filename):
     try:
         print("opening file:", filename)
@@ -13,10 +21,9 @@ def extract_exif_data(filename):
 
     tags = process_file(f, True)
 
-    if "Image GPSInfo" in tags.keys():
-        print(tags["Image GPSInfo"])
-    else:
-        print("no data found")
+    for gpsTag in gpsTags:
+        if gpsTag in tags.keys():
+            print(gpsTag + ':', tags[gpsTag])
 
 if __name__ == "__main__":
     for arg in sys.argv[1:]:
