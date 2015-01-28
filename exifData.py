@@ -76,8 +76,6 @@ class ExifData:
         lon = str(value(self.coordKeys['lonRef'])) + ' ' +\
             self.__fromDMStoDD(str(value(self.coordKeys['lon'])))
 
-
         print((lat, lon))
 
         return (lat, lon)
-
