@@ -16,14 +16,14 @@ class ExifData:
     def __init__(self, path, details=False):
         self.path = path
         self.rePatterns = {
-            'GPS': re.compile('EXIF GPS GPS[A-Za-z]+'),
+            'GPS': re.compile('GPS GPS[A-Za-z]+'),
             'Date': None
         }
         self.coordKeys = {
-            'latRef': 'EXIF GPS GPSLatitudeRef',
-            'lat': 'EXIF GPS GPSLatitude',
-            'lonRef': 'EXIF GPS GPSLongitudeRef',
-            'lon': 'EXIF GPS GPSLongitude'
+            'latRef': 'GPS GPSLatitudeRef',
+            'lat': 'GPS GPSLatitude',
+            'lonRef': 'GPS GPSLongitudeRef',
+            'lon': 'GPS GPSLongitude'
         }
 
         try:
@@ -33,6 +33,7 @@ class ExifData:
             return
 
         self.tags = process_file(self.fo, details=details)
+
 
     def __filter(self, name):
         for tag in self.tags.keys():
@@ -45,6 +46,17 @@ class ExifData:
         """
         translate DMS (degrees, minutes, seconds) exifread form to readable DD
         """
+
+        if not DMSCoord:
+            return
+
+        DMS = str(DMSCoord)[1:-1].split(',')
+        seconds = DMS[2].split('/')
+
+        return int(DMS[0]) + \
+            int(DMS[1]) / 60 + \
+            (int(seconds[0]) / int(seconds[1])) / 3600
+
 
     def dump(self, name='GPS'):
         """
@@ -71,11 +83,9 @@ class ExifData:
         """
         value = lambda t: None if t not in self.tags.keys() else self.tags[t]
 
-        lat = str(value(self.coordKeys['latRef'])) + ' ' +\
-            self.__fromDMStoDD(str(value(self.coordKeys['lat'])))
-        lon = str(value(self.coordKeys['lonRef'])) + ' ' +\
-            self.__fromDMStoDD(str(value(self.coordKeys['lon'])))
-
-        print((lat, lon))
+        lat = str(value(self.coordKeys['latRef'])) + ' ' + \
+            str(self.__fromDMStoDD(value(self.coordKeys['lat'])))
+        lon = str(value(self.coordKeys['lonRef'])) + ' ' + \
+            str(self.__fromDMStoDD(value(self.coordKeys['lon'])))
 
         return (lat, lon)

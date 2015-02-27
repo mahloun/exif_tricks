@@ -1,0 +1,22 @@
+#! /usr/bin/env python3
+
+import sys
+from pathlib import Path
+from exifData import ExifData
+
+def add_to_collection(file, collection):
+    file = str(file)
+    collection[file] = ExifData(file)
+
+if __name__ == "__main__":
+    collection = {}
+
+    if len(sys.argv) > 1:
+        path = Path(sys.argv[1])
+    else:
+        print("photomap [directory containing files]")
+
+    [add_to_collection(x, collection) for x in path.iterdir() if x.is_file()]
+
+    for i, j in collection.items():
+        print(i, j.coordinates())
