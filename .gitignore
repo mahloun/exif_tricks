@@ -4,3 +4,4 @@ core
 files_tests
 __pycache__
 test_exif.py
+files

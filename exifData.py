@@ -42,11 +42,11 @@ class ExifData:
             if match:
                 yield match.string
 
+
     def __fromDMStoDD(self, DMSCoord):
         """
         translate DMS (degrees, minutes, seconds) exifread form to readable DD
         """
-
         if not DMSCoord:
             return
 
@@ -65,6 +65,7 @@ class ExifData:
         """
         for tag in self.__filter(name):
             print(tag + ':', self.tags[tag])
+
 
     def filter(self):
         """
